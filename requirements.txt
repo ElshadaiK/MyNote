@@ -1,0 +1,7 @@
+Note taking app
+1. Must perform CRUD: 
+Create, retrieve, update, and delete
+2. Must include: 
+Course name(correspoinding to actual course)
+Note title(User entered)
+Note content
