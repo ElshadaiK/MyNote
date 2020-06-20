@@ -18,6 +18,7 @@ import java.util.List;
 
 public class NoteListActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,15 +30,16 @@ public class NoteListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startActivity(new Intent(NoteListActivity.this, MainActivity.class));
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
             }
         });
         initializeDisplayContent();
     }
 
     private void initializeDisplayContent() {
-        ListView listNotes = findViewById(R.id.list_notes);
+        final ListView listNotes = findViewById(R.id.list_notes);
         List<NoteInfo> notes = DataManager.getInstance().getNotes();
         ArrayAdapter<NoteInfo> adapterNotes = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, notes);
         listNotes.setAdapter(adapterNotes);
@@ -45,6 +47,8 @@ public class NoteListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Intent intent = new Intent(NoteListActivity.this, MainActivity.class);
+                NoteInfo note = (NoteInfo) listNotes.getItemAtPosition(position);
+                intent.putExtra(MainActivity.NOTE_INFO, note);
                 startActivity(intent);
 
             }
