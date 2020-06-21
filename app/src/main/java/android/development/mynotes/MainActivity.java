@@ -3,8 +3,10 @@ package android.development.mynotes;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,9 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText mTextNoteText;
     private int mNotePosition;
     private boolean mIsCancelling;
-    private String mOriginalCourseNoteId;
-    private String mOriginalCourseNoteTitle;
-    private String mOriginalCourseNoteText;
+    private NoteActivityViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +36,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ViewModelProvider viewModelProvider = new ViewModelProvider(getViewModelStore(),
+                ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()));
+        mViewModel = viewModelProvider.get(NoteActivityViewModel.class);
+
+        if(mViewModel.mIsNewlyCreated && savedInstanceState != null)
+            mViewModel.restoreState(savedInstanceState);
+        
+        mViewModel.mIsNewlyCreated = false;
 
         mSpinnerCourses = findViewById(R.id.spinner_courses);
         List<CourseInfo> courses = DataManager.getInstance().getCourses();
@@ -58,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
         if(mIsNewNote){
             return;
         }
-        mOriginalCourseNoteId = mNote.getCourse().getCourseId();
-        mOriginalCourseNoteTitle = mNote.getTitle();
-        mOriginalCourseNoteText = mNote.getText();
+        mViewModel.mOriginalCourseNoteId = mNote.getCourse().getCourseId();
+        mViewModel.mOriginalCourseNoteTitle = mNote.getTitle();
+        mViewModel.mOriginalCourseNoteText = mNote.getText();
 
     }
 
@@ -139,11 +148,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(outState != null){
+            mViewModel.saveState(outState);
+        }
+    }
+
     private void storePreviousNoteValues() {
-        CourseInfo course = DataManager.getInstance().getCourse(mOriginalCourseNoteId);
+//        CourseInfo course = DataManager.getInstance().getCourse(mOriginalCourseNoteId);
+//        mNote.setCourse(course);
+//        mNote.setTitle(mOriginalCourseNoteTitle);
+//        mNote.setText(mOriginalCourseNoteText);
+
+        CourseInfo course = DataManager.getInstance().getCourse(mViewModel.mOriginalCourseNoteId);
         mNote.setCourse(course);
-        mNote.setTitle(mOriginalCourseNoteTitle);
-        mNote.setText(mOriginalCourseNoteText);
+        mNote.setTitle(mViewModel.mOriginalCourseNoteTitle);
+        mNote.setText(mViewModel.mOriginalCourseNoteText);
     }
 
     private void saveNote() {
