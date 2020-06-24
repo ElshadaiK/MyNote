@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(mViewModel.mIsNewlyCreated && savedInstanceState != null)
             mViewModel.restoreState(savedInstanceState);
-        
+
         mViewModel.mIsNewlyCreated = false;
 
         mSpinnerCourses = findViewById(R.id.spinner_courses);
