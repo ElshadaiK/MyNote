@@ -23,4 +23,6 @@
     <string name="menu_slideshow">Slideshow</string>
 
     <string name="home_second">Home Second</string>
+    <string name="note_title">Note title</string>
+    <string name="note_text">Note text</string>
 </resources>
